@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout1}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<div layout:fragment="content">
+    <!-- wrap -->
+    <div class="wrap">
+        <!-- container -->
+        <section class="container no_line">
+            <!-- login_wrap -->
+            <div class="login_wrap ad_banner_top">
+                <div class="inner">
+                    <h3><img src="" alt="" />회원가입</h3>
+                    <!-- 등록영역 -->
+                    <div class="form_wrap">
+                        <form id="loginFrm" name="loginFrm"  method="post" action="/users/new" autocomplete="off">
+                            <label><input type="text" id="email" name="email"  placeholder="아이디"/></label>
+                            <span class="inp_certi"><input type="password" id="password" name="password" class="type_blue" placeholder="비밀번호"></span>
+                            <span class="inp_certi"><label><input type="text" name="name" id="name" placeholder="이름"/></label></span>
+                            <span class="inp_certi"><label><input type="text" name="quiz" id="quiz" placeholder="퀴즈"/></label></span>
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <span class="inp_certi"></span>
+                            <button type="submit" id="btnLogin" style="
+					    width: 100%;
+					    height: 7rem;
+					    margin-top: auto;
+					    font-size: 2.4rem;
+					    color: #fff;
+					    text-align: center;
+					    line-height: 4rem;
+					    background: #173c71;
+					"><span style="
+					    font-size: 2.4rem;
+					    color: #fff;
+					    text-align: center;
+					    line-height: 4rem;
+					">회원가입</span></button>
+                        </form>
+                    </div>
+                    <!-- //등록영역 -->
+                </div>
+            </div>
+            <!-- //login_wrap -->
+        </section>
+        <!-- container //-->
+    </div>
+    <!-- wrap -->
+</div>
+</html>

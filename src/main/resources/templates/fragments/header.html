@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header th:fragment="header">
+        <!-- top_util_wrap -->
+        <div class="top_util_wrap">
+            <div class="logo">
+                <div class="event_logo">
+                    <h1>
+                        <a href="/" style="align-content: space-around;" >
+                            <img src="/images/logo.png" alt="로고"/>
+                        </a>
+                    </h1>
+                </div>
+            </div>
+            <!-- 검색창 -->
+            <div class="search">
+                <div id="proTopSearchArea" style="display: none"></div>
+                <input type="text" id="topSearchTxt" name="topSearchTxt"
+                       placeholder="강좌나 교재이름, 문항코드를 검색해 보세요."
+                       onfocus="searchLayerOn()"
+                       onkeyup="searchAutoComplete()"
+                       onkeydown="searchEnterChk(event);"
+                       value=""/>
+                <label for="topSearchTxt" class="btn_search">
+                    <button type="button" onclick="javascript:searchGo()">검색</button>
+                </label>
+            </div>
+            <!-- //검색창 -->
+            <!-- 마이메뉴 -->
+            <ul class="my_menu">
+                <li class="has-children active" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_TEACHER')">
+                    <a href="/admin/lectures/new">상품등록</a>
+                </li>
+                <li class="has-children active" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_TEACHER')">
+                <a href="/admin/lectures/list">상품관리</a>
+                </li>
+                <li class="user_login">
+                    <a href="/users/login" class="btn_login" sec:authorize="isAnonymous()">로그인</a>
+                    <a href="/users/new" class="btn_login" sec:authorize="isAnonymous()">회원가입</a>
+                    <span id="topLoginAreaSpan" class="user_name"
+                          style="cursor: pointer;" sec:authorize="isAuthenticated" sec:authentication="principal.name"></span>
+                    <span class="user_name"
+                          sec:authorize="isAuthenticated">님</span>
+                    <a href="/users/logout" class="btn_logout" sec:authorize="isAuthenticated()">로그아웃</a>
+                </li>
+                <li><a href="" class="icon_studyRoom" sec:authorize="isAuthenticated()">나의 학습방</a></li>
+            </ul>
+            <!-- //마이메뉴 -->
+        </div>
+</header>
+</html>

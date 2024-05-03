@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>EBStudy</title>
+
+    <!-- 공통으로 쓰이는 css -->
+    <link th:rel="stylesheet" th:href="@{/css/board.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/ebsivod.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/layout.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/librarys.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/main.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/common.css}" />
+    <!-- 각 페이지의 CSS가 작성될 위치 -->
+    <th:block layout:fragment="css"></th:block>
+
+</head>
+<body>
+<div class="wrap">
+    <div th:replace="~{fragments/header::header}"></div>
+    <div layout:fragment="content" class="content"></div>
+    <div th:replace="~{fragments/footer::footer}"></div>
+</div>
+
+
+<!-- 공통으로 쓰이는 js  -->
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
