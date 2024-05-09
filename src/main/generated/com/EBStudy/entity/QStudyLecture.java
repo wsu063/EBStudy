@@ -46,7 +46,7 @@ public class QStudyLecture extends EntityPathBase<StudyLecture> {
 
     public QStudyLecture(Class<? extends StudyLecture> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture")) : null;
+        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture"), inits.get("lecture")) : null;
         this.myStudy = inits.isInitialized("myStudy") ? new QMyStudy(forProperty("myStudy"), inits.get("myStudy")) : null;
     }
 

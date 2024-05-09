@@ -29,11 +29,17 @@ public class Lecture extends BaseEntity {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LectureImg> lectrueImgs;
+    private String name;
+
+    @OneToOne(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private LectureImg lectureImg;
 
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LectureIdx> lectrueIdxs;
+    private List<LectureIdx> lectureIdxs;
+
+    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudyLecture> studyLectures;
+
 
     //lecture엔티티 수정
     public void updateLecture(LectureFormDto lectureFormDto) {

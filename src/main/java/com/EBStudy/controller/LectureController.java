@@ -57,10 +57,10 @@ public class LectureController {
     private String lectureDtl(@PathVariable("lectureId") Long lectureId, Model model) {
         try {
             LectureFormDto lectureFormDto = lectureService.getLectureDtl(lectureId);
+            model.addAttribute("lectureFormDto", lectureFormDto);
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "강의 정보를 가져오는 도중 에러가 발생했습니다.");
-
             model.addAttribute("lectureFormDto", new LectureFormDto());
             return "lecture/rewrite";
 
@@ -68,7 +68,7 @@ public class LectureController {
         return "lecture/rewrite";
     }
 
-    @PostMapping(value = "/admin/lectures/detail/{lectureId}")
+    @PostMapping(value = "/admin/lectures/rewrite/{lectureId}")
     public String lectureUpdate(@Valid LectureFormDto lectureFormDto, Model model,
                                 BindingResult bindingResult,
                                 @RequestParam("lectureImgFile") MultipartFile lectureImgFile,
@@ -87,7 +87,7 @@ public class LectureController {
             return "lecture/rewrite";
         }
 
-        return "redirect:/";
+        return "redirect:/admin/lectures/detail/" + lectureId;
     }
 
     //목록 가져오기
@@ -110,8 +110,6 @@ public class LectureController {
     @GetMapping(value = "/admin/lectures/detail/{lectureId}")
     private String lectureDetail(Model model, @PathVariable(value = "lectureId") Long lectureId, Principal principal) {
         LectureFormDto lectureFormDto = lectureService.getLectureDtl(lectureId);
-
-
         model.addAttribute("lecture", lectureFormDto);
         model.addAttribute("lectureIdxDto", new LectureIdxDto());
         model.addAttribute("userId", principal.getName());

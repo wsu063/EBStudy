@@ -37,7 +37,7 @@ public class LectureIdxService {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(EntityNotFoundException::new);
         lectureIdx.setLecture(lecture);
-        lectureIdx.setIndexYn("Y");
+        lectureIdx.setIndexYn("N");
         lectureIdxRepository.save(lectureIdx);
 
         return lectureIdxDto.getId();

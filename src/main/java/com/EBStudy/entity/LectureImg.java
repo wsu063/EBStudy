@@ -14,7 +14,7 @@ public class LectureImg {
     @Id
     @Column(name = "lecture_img_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String imgName;
 
@@ -24,7 +24,7 @@ public class LectureImg {
 
     private String repImgYn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 

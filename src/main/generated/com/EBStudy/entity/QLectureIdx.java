@@ -50,7 +50,7 @@ public class QLectureIdx extends EntityPathBase<LectureIdx> {
 
     public QLectureIdx(Class<? extends LectureIdx> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture")) : null;
+        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture"), inits.get("lecture")) : null;
     }
 
 }

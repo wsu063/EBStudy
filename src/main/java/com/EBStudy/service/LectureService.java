@@ -4,10 +4,7 @@ import com.EBStudy.dto.LectureFormDto;
 import com.EBStudy.dto.LectureIdxDto;
 import com.EBStudy.dto.LectureImgDto;
 import com.EBStudy.dto.LectureSearchDto;
-import com.EBStudy.entity.Lecture;
-import com.EBStudy.entity.LectureIdx;
-import com.EBStudy.entity.LectureImg;
-import com.EBStudy.entity.User;
+import com.EBStudy.entity.*;
 import com.EBStudy.repository.LectureIdxRepository;
 import com.EBStudy.repository.LectureImgRepository;
 import com.EBStudy.repository.LectureRepository;
@@ -39,8 +36,8 @@ public class LectureService {
     public Long saveLecture(LectureFormDto lectureFormDto,
                             MultipartFile lectureImgFile) throws Exception {
 
-        //1. 상품 등록
-        Lecture lecture = lectureFormDto.createLecture();
+        //1. 상품 등록.
+        Lecture lecture = lectureFormDto.createLecture(); // dto -> entity
 
         lecture.setEndDate(LocalDateTime.now().plusDays(30));
         lectureRepository.save(lecture);
@@ -49,7 +46,7 @@ public class LectureService {
         lectureImg.setLecture(lecture); // ★lectureImg가 lecture를 참조하므로 반드시 item 객체를 입력해준다.
         lectureImg.setRepImgYn("Y");
 
-        //이미지 파일을 하나씩 저장
+        //이미지 파일을 저장
         lectureImgService.saveLectureImg(lectureImg, lectureImgFile);
 
         return lectureFormDto.getId();
@@ -63,17 +60,13 @@ public class LectureService {
         LectureImg lectureImg = lectureImgRepository.findByLectureId(lectureId);
         List<LectureIdx> lectureIdxList = lectureIdxRepository.findByLectureIdOrderByIdAsc(lectureId);
         //-1. entitiy-> dto 변환
-        List<LectureImgDto> lectureImgDtoList = new ArrayList<>();
-
         LectureImgDto lectureImgDto = LectureImgDto.of(lectureImg);
-        lectureImgDtoList.add(lectureImgDto);
 
         List<LectureIdxDto> lectureIdxDtoList = new ArrayList<>();
         for(LectureIdx lectureIdx : lectureIdxList) {
             LectureIdxDto lectureIdxDto = LectureIdxDto.of(lectureIdx);
             lectureIdxDtoList.add(lectureIdxDto);
         }
-
 
         //2. lecture 가져오기
         Lecture lecture = lectureRepository.findById(lectureId)
@@ -95,18 +88,20 @@ public class LectureService {
         return lecturePage;
     }
 
+    //select(글 목록 가져오기)
+    public List<Lecture> getLectureAll() {
+        List<Lecture> lectures = lectureRepository.getLectureAll();
+
+        return lectures;
+    }
+
     //update
     public Long updateLecture(LectureFormDto lectureFormDto, MultipartFile lectureImgFile) throws  Exception {
         Lecture lecture = lectureRepository.findById(lectureFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        lecture.updateLecture(lectureFormDto);
-
         Long lectureImgId = lectureFormDto.getLectureImgId();
-
-
+        lecture.updateLecture(lectureFormDto);
         lectureImgService.updateLectureImg(lectureImgId, lectureImgFile);
-
-
         return lecture.getId();
     }
 
@@ -117,9 +112,6 @@ public class LectureService {
 
         lectureRepository.delete(lecture);
     }
-
-
-
 
 
     //본인 확인
@@ -140,4 +132,12 @@ public class LectureService {
         }
         return true;
     }
+
+    //select(수강중인 강의 목록 가져오기)
+    @Transactional(readOnly = true)
+    public Page<StudyLecture> getStudyLecutrePage(Pageable pageable, Long myStudyId) {
+        Page<StudyLecture> studyLecturePage = lectureRepository.getStudyLecturePage(pageable, myStudyId);
+        return studyLecturePage;
+    }
+
 }

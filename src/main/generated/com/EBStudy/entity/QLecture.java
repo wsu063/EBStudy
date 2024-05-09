@@ -18,6 +18,8 @@ public class QLecture extends EntityPathBase<Lecture> {
 
     private static final long serialVersionUID = -1884727198L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QLecture lecture = new QLecture("lecture");
 
     public final QBaseEntity _super = new QBaseEntity(this);
@@ -31,15 +33,19 @@ public class QLecture extends EntityPathBase<Lecture> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<LectureIdx, QLectureIdx> lectrueIdxs = this.<LectureIdx, QLectureIdx>createList("lectrueIdxs", LectureIdx.class, QLectureIdx.class, PathInits.DIRECT2);
+    public final ListPath<LectureIdx, QLectureIdx> lectureIdxs = this.<LectureIdx, QLectureIdx>createList("lectureIdxs", LectureIdx.class, QLectureIdx.class, PathInits.DIRECT2);
 
-    public final ListPath<LectureImg, QLectureImg> lectrueImgs = this.<LectureImg, QLectureImg>createList("lectrueImgs", LectureImg.class, QLectureImg.class, PathInits.DIRECT2);
+    public final QLectureImg lectureImg;
 
     //inherited
     public final StringPath modifiedBy = _super.modifiedBy;
 
+    public final StringPath name = createString("name");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
+
+    public final ListPath<StudyLecture, QStudyLecture> studyLectures = this.<StudyLecture, QStudyLecture>createList("studyLectures", StudyLecture.class, QStudyLecture.class, PathInits.DIRECT2);
 
     public final EnumPath<com.EBStudy.constant.Subject> subject = createEnum("subject", com.EBStudy.constant.Subject.class);
 
@@ -49,15 +55,24 @@ public class QLecture extends EntityPathBase<Lecture> {
     public final DateTimePath<java.time.LocalDateTime> updateDate = _super.updateDate;
 
     public QLecture(String variable) {
-        super(Lecture.class, forVariable(variable));
+        this(Lecture.class, forVariable(variable), INITS);
     }
 
     public QLecture(Path<? extends Lecture> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QLecture(PathMetadata metadata) {
-        super(Lecture.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QLecture(PathMetadata metadata, PathInits inits) {
+        this(Lecture.class, metadata, inits);
+    }
+
+    public QLecture(Class<? extends Lecture> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.lectureImg = inits.isInitialized("lectureImg") ? new QLectureImg(forProperty("lectureImg"), inits.get("lectureImg")) : null;
     }
 
 }

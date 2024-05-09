@@ -2,6 +2,7 @@ package com.EBStudy.dto;
 
 import com.EBStudy.constant.Subject;
 import com.EBStudy.entity.Lecture;
+import com.EBStudy.entity.LectureImg;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,6 @@ public class LectureFormDto {
     @NotBlank(message = "제목은 필수 입력입니다.")
     private String title;
 
-
     @NotBlank(message = "내용은 필수 입력입니다.")
     private String content;
     
@@ -32,7 +32,9 @@ public class LectureFormDto {
     private String createdBy;
     private String modifiedBy;
 
-    private LectureImgDto lectureImgDto;
+    private String name;
+
+    private LectureImgDto lectureImgDto = new LectureImgDto();
     private List<LectureIdxDto> lectureIdxDtoList = new ArrayList<>();
 
     private Long lectureImgId;
@@ -41,7 +43,23 @@ public class LectureFormDto {
 
     //dto -> entity
     public Lecture createLecture() {
-        return modelMapper.map(this, Lecture.class);
+            Lecture lecture = new Lecture();
+            lecture.setId(this.id);
+            lecture.setTitle(this.title);
+            lecture.setContent(this.content);
+            lecture.setSubject(this.subject);
+            lecture.setEndDate(this.endDate);
+            lecture.setName(this.name);
+
+            if (this.lectureImgDto != null) {
+                LectureImg lectureImg = new LectureImg();
+                lectureImg.setImgUrl(this.lectureImgDto.getImgUrl());
+                lectureImg.setImgName(this.lectureImgDto.getImgName());
+                lecture.setLectureImg(lectureImg);
+            }
+
+            return lecture;
+
     }
 
     //entity -> dto

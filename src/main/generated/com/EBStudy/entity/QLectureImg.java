@@ -22,7 +22,7 @@ public class QLectureImg extends EntityPathBase<LectureImg> {
 
     public static final QLectureImg lectureImg = new QLectureImg("lectureImg");
 
-    public final NumberPath<Integer> id = createNumber("id", Integer.class);
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imgName = createString("imgName");
 
@@ -52,7 +52,7 @@ public class QLectureImg extends EntityPathBase<LectureImg> {
 
     public QLectureImg(Class<? extends LectureImg> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture")) : null;
+        this.lecture = inits.isInitialized("lecture") ? new QLecture(forProperty("lecture"), inits.get("lecture")) : null;
     }
 
 }

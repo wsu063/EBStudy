@@ -9,6 +9,7 @@ import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -33,6 +34,9 @@ public class User extends BaseEntity {
 
     private String quiz;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MyStudy myStudy;
+
     //dto -> entity
     public static User createUser(UserFormDto userFormDto, PasswordEncoder passwordEncoder) {
         String password = passwordEncoder.encode(userFormDto.getPassword());
@@ -42,9 +46,14 @@ public class User extends BaseEntity {
         user.setEmail(userFormDto.getEmail());
         user.setQuiz(userFormDto.getQuiz());
         user.setPassword(password);
-
         //개발자가 지정해줘야 하는 정보
         user.setRole(Role.STUDENT);
+
+        //나의강의를 설정한다.
+        MyStudy myStudy = MyStudy.createMyStudy(user);
+        user.setMyStudy(myStudy);
+
+
 
         return user;
     }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row justify-content-center" th:object="${lecture}">
+            <div class="backdrop col-10 offset-1" >
+                <div class="backdrop-cover">
+                    <div class="cover-inner row">
+                        <div class="col-md-4">
+                            <div class="card img-only" id="profile">
+                                <img th:src="${lecture.lectureImgDto.imgUrl}" th:alt="${lecture.lectureImgDto.oriImgName}"
+                                     class="card-img-top"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="detail-top col-12">
+                                <span class="flag_ro_col1" th:text="${lecture.subject}"></span>
+                                <h2 style="font-size: 2.2rem; font-weight: 700" th:text="${lecture.title}"></h2>
+                            </div>
+                            <div class="detail-mid col-12">
+                                <h3 th:text="${lecture.name}"></h3>
+                                <p></p>
+                                <p th:utext="${lecture.content}"></p>
+                            </div>
+                        </div>
+                        <div class="detail-bottom col-12">
+                            <!-- 목차 보이기 -->
+                            <div class="col-md-12">
+                                <table class="table table-responsive-md">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">제목</th>
+                                            <th scope="col">수강여부</th>
+                                            <th scope="col">재생</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="index : ${lecture.lectureIdxDtoList}">
+                                            <th th:text="${index.idxName}" scope="row"></th>
+                                            <td th:text="${index.indexYn}"></td>
+                                            <td><a th:href="${index.videoUrl}">재생</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    </script>
+</th:block>
+</html>

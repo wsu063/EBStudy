@@ -23,4 +23,14 @@ public class StudyLecture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mystudy_id")
     private MyStudy myStudy;
+
+    public static StudyLecture createStudyLecture(Lecture lecture, User user) {
+        StudyLecture studyLecture = new StudyLecture();
+        studyLecture.setLecture(lecture);
+        studyLecture.setMyStudy(user.getMyStudy());
+
+        return studyLecture;
+    }
+
+
 }

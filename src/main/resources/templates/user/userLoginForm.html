@@ -33,7 +33,7 @@
                                     <label for="login_saved"><i></i>아이디 저장</label>
                                 </div>
                                 <div class="link">
-                                    <span><a href="">비밀번호 찾기</a></span>
+                                    <span><a data-toggle="modal" data-target="#passwordFind">비밀번호 찾기</a></span>
                                     <span><a href="/users/new">회원가입</a></span>
                                 </div>
                             </div>
@@ -58,7 +58,61 @@
         </section>
         <!-- container //-->
     </div>
-    <!-- wrap -->
+    <!-- Modal -->
+    <div class="modal fade" id="passwordFind" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="passwordFind" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetPasswordModalLabel">비밀번호 재설정</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="forgotPasswordForm">
+                        <div class="mb-3">
+                            <label th:for="userId" class="form-label">아이디</label>
+                            <input type="text" class="form-control" id="userId" name="userId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quizAnswer" class="form-label">퀴즈 답변</label>
+                            <input type="text" class="form-control" id="quizAnswer" name="quizAnswer" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="chkReset()">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 비밀번호 재설정 모달 -->
+    <div class="modal fade" id="passwordResetModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordResetModalLabel">비밀번호 재설정</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 비밀번호 입력 폼 -->
+                    <form id="passwordResetForm">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">새로운 비밀번호</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!-- 비밀번호 재설정 버튼 -->
+                    <button type="button" class="btn btn-primary" onclick="resetPassword()">비밀번호 재설정</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <th:block layout:fragment="script">
     <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
@@ -86,6 +140,55 @@
                     deleteCookie("setCookieYN");
             }
         });
+
+        function chkReset() {
+            // 사용자가 입력한 아이디와 퀴즈 답변을 가져옴
+            var userId = $("#userId").val();
+            var quizAnswer = $("#quizAnswer").val();
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            // 폼 데이터 객체 생성
+            var formData = {
+                userId: userId,
+                quizAnswer: quizAnswer
+            };
+            $.ajax({
+                url: "/users/check",
+                type: "POST",
+                contentType: "application/json",
+                beforeSend: function(xhr) {
+                    // 데이터를 전송하기 전에 헤더에 csrf 값을 설정
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+                data: JSON.stringify(formData), // 데이터를 JSON 형식으로 전송
+                success: function(result, status, xhr) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    $("#passwordFind").modal("dismiss");
+                    $("#passwordResetModal").modal("show");
+                       } else {
+                        alert("오류가 발생했습니다.");
+                   }
+
+                },
+                error: function(jqXHR, status, error) {
+                    if (jqXHR.responseText === "퀴즈 답변이 틀렸습니다.") {
+                        alert('퀴즈 답변이 일치하지 않습니다.');
+                        location.href = '/members/login';
+                    } else {
+
+                    $("#passwordFind").modal("dismiss");
+                    $("#passwordResetModal").modal("show");
+
+                }
+                    }
+
+                }
+            });
+        }
     </script>
 </th:block>
 </html>

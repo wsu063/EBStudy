@@ -31,8 +31,20 @@ public class UserService implements UserDetailsService {
 
     private void validateDuplicateUser(User user) {
         User findUser = userRepository.findByEmail(user.getEmail());
+        if(findUser != null) {
+            throw new IllegalStateException("이미 가입된 회원입니다.");
+        }
     }
 
+    //아이디와 퀴즈를 확인하여 비밀번호 재설정
+    public boolean checkQuizAnswer(String userId, String quizAnswer) {
+        User user = userRepository.findByEmail(userId);
+        if(user == null) {
+            throw new IllegalStateException("가입되지 않은 회원입니다.");
+        }
+        //퀴즈가 맞으면 true, 아니면 false
+        return user.getQuiz().equals(quizAnswer);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

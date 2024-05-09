@@ -3,8 +3,7 @@ package com.EBStudy.repository;
 import com.EBStudy.constant.Subject;
 import com.EBStudy.dto.LectureFormDto;
 import com.EBStudy.dto.LectureSearchDto;
-import com.EBStudy.entity.Lecture;
-import com.EBStudy.entity.QLecture;
+import com.EBStudy.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -61,9 +60,20 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
         return StringUtils.isEmpty(searchQuery) ? null : QLecture.lecture.title.like("%" + searchQuery + "%");
     }
 
+
+
+    @Override
+    public List<Lecture> getLectureAll() {
+        List<Lecture> content = queryFactory
+                .selectFrom(QLecture.lecture)
+                .orderBy(QLecture.lecture.regDate.desc())
+                .fetch();
+
+        return content;
+    }
+
     @Override
     public Page<Lecture> getLecturePage(LectureSearchDto lectureSearchDto, Pageable pageable) {
-
         List<Lecture> content = queryFactory
                 .selectFrom(QLecture.lecture)
                 .where(regDtsAfter(lectureSearchDto.getSearchDateType()),
@@ -80,6 +90,25 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
                 .where(regDtsAfter(lectureSearchDto.getSearchDateType()),
                         searchSubjectEq(lectureSearchDto.getSearchSubject()),
                         searchByLike(lectureSearchDto.getSearchBy(), lectureSearchDto.getSearchQuery()))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public Page<StudyLecture> getStudyLecturePage(Pageable pageable, Long myStudyId) {
+        List<StudyLecture> content = queryFactory
+                .selectFrom(QStudyLecture.studyLecture)
+                .where(QStudyLecture.studyLecture.myStudy.id.eq(myStudyId))
+                .orderBy(QStudyLecture.studyLecture.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory
+                .select(Wildcard.count)
+                .from(QStudyLecture.studyLecture)
+                .where(QStudyLecture.studyLecture.myStudy.id.eq(myStudyId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);

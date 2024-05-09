@@ -24,6 +24,8 @@ public class QMyStudy extends EntityPathBase<MyStudy> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<StudyLecture, QStudyLecture> studyLectures = this.<StudyLecture, QStudyLecture>createList("studyLectures", StudyLecture.class, QStudyLecture.class, PathInits.DIRECT2);
+
     public final QUser user;
 
     public QMyStudy(String variable) {
@@ -44,7 +46,7 @@ public class QMyStudy extends EntityPathBase<MyStudy> {
 
     public QMyStudy(Class<? extends MyStudy> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }
