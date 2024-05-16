@@ -52,9 +52,11 @@ public class User extends BaseEntity {
         //나의강의를 설정한다.
         MyStudy myStudy = MyStudy.createMyStudy(user);
         user.setMyStudy(myStudy);
-
-
-
         return user;
+    }
+
+    public static void updateUser(User user, String password, PasswordEncoder passwordEncoder) {
+        String newPassword = passwordEncoder.encode(password);
+        user.setPassword(newPassword);
     }
 }

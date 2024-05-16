@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/users/check")
-    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> requestData) {
+    public ResponseEntity<String> chkPassword(@RequestBody Map<String, String> requestData) {
         String userId = requestData.get("userId");
         String quizAnswer = requestData.get("quizAnswer");
 
@@ -103,6 +103,26 @@ public class UserController {
         } else {
             // 퀴즈 답변이 일치하지 않는 경우, 에러 응답
             return new ResponseEntity<String>("퀴즈 답변이 틀렸습니다.", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(value = "/users/reset")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> requestData) {
+        String confirmPassword = requestData.get("confirmPassword");
+        String newPassword = requestData.get("newPassword");
+        String userId = requestData.get("userId");
+
+        // 아이디와 퀴즈 답변을 이용하여 비밀번호 재설정 가능 여부 확인
+        boolean isValid = confirmPassword.equals(newPassword);
+
+        if (isValid) {
+            // 비밀번호가 서로 같은 경우,
+            User user = userRepository.findByEmail(userId);
+            User.updateUser(user, confirmPassword, passwordEncoder);
+            userRepository.save(user);
+            return new ResponseEntity<String>(userId, HttpStatus.OK);
+        } else {
+            // 비밀번호가 서로 같지 않은,
+            return new ResponseEntity<String>("비밀번호가 서로 같지 않습니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
